@@ -5,6 +5,8 @@
       <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.punchthrough.bean.sdk/sdk/1.0.1/res" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.punchthrough.bean.sdk/sdk/1.0.1/54e8a3ab7f07995933f076de47aaa431018dfb21/sdk-1.0.1-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

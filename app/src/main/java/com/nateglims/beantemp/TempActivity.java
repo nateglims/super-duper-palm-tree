@@ -17,10 +17,14 @@ import com.punchthrough.bean.sdk.message.DeviceInfo;
 import com.punchthrough.bean.sdk.message.ScratchBank;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
 public class TempActivity extends ActionBarActivity {
+
+    Bean myBean;
+    String myBeanName = "destroyerBean";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,22 +55,19 @@ public class TempActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    final List<Bean> beans = new ArrayList<>();
 
     BeanDiscoveryListener discoveryListener = new BeanDiscoveryListener() {
         @Override
         public void onBeanDiscovered(Bean bean, int rssi) {
-            beans.add(bean);
+            if (bean.getDevice().getName().equals(myBeanName)) {
+                System.out.println("Found bean: " + bean.getDevice().getName());
+                myBean = bean;
+            }
         }
 
         @Override
         public void onDiscoveryComplete() {
-            for (Bean bean : beans) {
-                System.out.println(bean.getDevice().getName());   // "Bean"              (example)
-                System.out.println(bean.getDevice().getAddress());    // "B4:99:4C:1E:BC:75" (example)
-                bean.connect(getApplicationContext(), listener);
-            }
-
+                myBean.connect(getApplicationContext(), listener);
         }
     };
 
@@ -74,33 +75,12 @@ public class TempActivity extends ActionBarActivity {
         @Override
         public void onConnected() {
             System.out.println("Connected!");
-
-            beans.get(0).readDeviceInfo(new Callback<DeviceInfo>() {
-                @Override
-                public void onResult(DeviceInfo deviceInfo) {
-                    System.out.println(deviceInfo.hardwareVersion());
-                    System.out.println(deviceInfo.firmwareVersion());
-                    System.out.println(deviceInfo.softwareVersion());
-                }
-            });
-
-            beans.get(0).readTemperature(new Callback<Integer>() {
-                @Override
-                public void onResult(Integer temp) {
-                    System.out.println("Current temp: " + temp + "°C");
-//                    TextView textView = addView();
-//                    textView.setText("Current temp: " + temp + "°C");
-//                    RelativeLayout layout = (RelativeLayout) findViewById(R.id.tempcontent);
-//                    layout.addView(textView);
-
-                }
-            });
-
+            updateTemp();
         }
 
         @Override
         public void onConnectionFailed() {
-
+            System.out.println("Failed to connect!");
         }
 
         @Override
@@ -110,22 +90,28 @@ public class TempActivity extends ActionBarActivity {
 
         @Override
         public void onSerialMessageReceived(byte[] bytes) {
-
+            System.out.println("Got serial message: " + new String(bytes));
         }
 
         @Override
         public void onScratchValueChanged(ScratchBank scratchBank, byte[] bytes) {
-
+            System.out.println("Scratch value changed.");
         }
 
         @Override
         public void onError(BeanError beanError) {
-
+            System.out.println("Bean error.");
         }
     };
 
-    public TextView addView() {
-        TextView textView = new TextView(this);
-        return textView;
+    public void updateTemp() {
+        myBean.readTemperature(new Callback<Integer>() {
+            @Override
+            public void onResult(Integer result) {
+                System.out.println("Got temperature of " + result.toString());
+                TextView textView = (TextView) findViewById(R.id.tempTextView);
+                textView.setText(result.toString() + "°C");
+            }
+        });
     }
 }

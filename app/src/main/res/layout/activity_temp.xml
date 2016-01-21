@@ -6,4 +6,12 @@
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".TempActivity"
     android:id="@+id/tempcontent">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/tempTextView"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="@dimen/tempTextView" />
 </RelativeLayout>
