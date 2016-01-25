@@ -4,7 +4,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.punchthrough.bean.sdk.Bean;
@@ -13,15 +12,13 @@ import com.punchthrough.bean.sdk.BeanListener;
 import com.punchthrough.bean.sdk.BeanManager;
 import com.punchthrough.bean.sdk.message.BeanError;
 import com.punchthrough.bean.sdk.message.Callback;
-import com.punchthrough.bean.sdk.message.DeviceInfo;
 import com.punchthrough.bean.sdk.message.ScratchBank;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class TempActivity extends ActionBarActivity {
+
+    // TODO: discover if bluetooth is enabled
+    // TODO: solve the pin issue...
 
     Bean myBean;
     String myBeanName = "destroyerBean";
@@ -30,6 +27,9 @@ public class TempActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_temp);
+        TextView textView = (TextView) findViewById(R.id.tempTextView);
+        textView.setTextSize(32);
+        textView.setText("Finding beans...");
         BeanManager.getInstance().startDiscovery(discoveryListener);
     }
 
@@ -61,6 +61,10 @@ public class TempActivity extends ActionBarActivity {
         public void onBeanDiscovered(Bean bean, int rssi) {
             if (bean.getDevice().getName().equals(myBeanName)) {
                 System.out.println("Found bean: " + bean.getDevice().getName());
+                TextView textView = (TextView) findViewById(R.id.tempTextView);
+                textView.setTextSize(32);
+                textView.setText("Connecting to " + bean.getDevice().getName() + "...");
+
                 myBean = bean;
             }
         }
@@ -110,6 +114,7 @@ public class TempActivity extends ActionBarActivity {
             public void onResult(Integer result) {
                 System.out.println("Got temperature of " + result.toString());
                 TextView textView = (TextView) findViewById(R.id.tempTextView);
+                textView.setTextSize(72);
                 textView.setText(result.toString() + "°C");
             }
         });
